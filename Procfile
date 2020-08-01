@@ -1,1 +1,1 @@
-worker: python quest.py $PORT
+worker: python quest.py

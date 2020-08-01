@@ -7,7 +7,7 @@ from datetime import datetime
 from telebot import types
 
 
-bot = telebot.TeleBot(config.TOKEN, threaded=False)
+bot = telebot.TeleBot(config.TOKEN)
 
 logname = ''
 
@@ -121,14 +121,18 @@ def forthTaskComplete3(chatId):
 
 
 def forthTaskComplete4(chatId):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    item1 = types.KeyboardButton("ВПЕРЁД")
+    markup.add(item1)
     bot.send_message(chatId, '''Отличный результат! Мы на финишной прямой💪 Осталось последнее пятое задание. Готов(а) подурачиться?
-Если твой ответ ДА, жми кнопку ВПЕРЕД🔥 ''')
+Если твой ответ ДА, жми кнопку ВПЕРЕД🔥 ''', parse_mode='html', reply_markup=markup)
 
 
 def forthTaskComplete5(chatId):
+    markup = types.ReplyKeyboardRemove()
     bot.send_message(chatId, 'На картинке изображены 8 смайликов с разными \
 эмоциями. Повтори три любые из них и пришли фотографии в чат 😉 3, 2, 1... \
-Начали!')
+Начали!', parse_mode='html', reply_markup=markup)
     sendPic(5, 'Smiles.png', chatId)
 
 

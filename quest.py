@@ -147,11 +147,12 @@ def goodFinal(chatId):
 
 def badFinal(chatId):
     markup = types.ReplyKeyboardRemove()
-    bot.send_message(chatId, '🙈Спасибо, что сообщил. Напиши пожалуйста, что \
+    bot.send_message(chatId, '🙈Спасибо, что сообщил. Напиши, пожалуйста, \
+        @help_quiz_bot, что \
 не понравилось. Это поможет квестам ТУСА ПУПСА стать лучше и интереснее😉',
                      parse_mode='html', reply_markup=markup)
-ОТБИВКА НА ОБРАТНУЮ СВЯЗЬ
-Спасибо за обратную связь! Твое сообщение уже летит ко мне😉 
+# ОТБИВКА НА ОБРАТНУЮ СВЯЗЬ
+# Спасибо за обратную связь! Твое сообщение уже летит ко мне😉 
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
@@ -160,6 +161,7 @@ def welcome(message):
     item1 = types.KeyboardButton("НАЧАТЬ!")
     markup.add(item1)
     print(message.from_user.first_name)
+    print(message.chat.id)
     # log = open(logname, 'w')
     # user = message.from_user.username
     # log.write("Username: " + (user if user is not None else "") + "\n")
@@ -169,6 +171,14 @@ def welcome(message):
     # log.write("Last name: " + (user if user is not None else "") + "\n")
     # log.write("Time: " + datetime.now().strftime("%d%m%Y_%H%M%S"))
     # log.close()
+    user = message.from_user.username
+    adminMsg = ("Username: @" + (user if user is not None else "") + "\n")
+    user = message.from_user.first_name
+    adminMsg += ("First name: " + (user if user is not None else "") + "\n")
+    user = message.from_user.last_name
+    adminMsg += ("Last name: " + (user if user is not None else "") + "\n")
+    bot.send_message(config.adminId, adminMsg)
+
     bot.send_message(message.chat.id, "Привет, " + message.from_user.first_name
                      + "!\n" + '''
 Ты в чате квиз-бота ТУСА ПУПСА😉

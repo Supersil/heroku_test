@@ -176,7 +176,14 @@ def welcome(message):
     adminMsg += ("First name: " + (user if user is not None else "") + "\n")
     user = message.from_user.last_name
     adminMsg += ("Last name: " + (user if user is not None else "") + "\n")
+    adminMsg += ("ID: " + str(message.chat.id) + "\n")
     bot.send_message(config.adminId, adminMsg)
+
+    day = int(cur.strftime("%d"))
+    if config.lastClear != day:
+        config.state = {}
+        config.lastClear = day 
+        bot.send_message(config.adminId, "База данных очищена.")
 
     bot.send_message(message.chat.id, "Привет, " + message.from_user.first_name
                      + "!\n" + '''
@@ -191,114 +198,126 @@ def welcome(message):
 
 Удачи!
 ''', parse_mode='html', reply_markup=markup)
-    config.state = 0
+    config.state[message.chat.id] = 0
 
 
 @bot.message_handler(content_types=['text'])
 def text_answer(message):
-    if config.state == 0:
+    if not message.chat.id in config.state:
+        return
+    if config.state[message.chat.id] == 0:
         if message.chat.type == 'private':
             if message.text == 'НАЧАТЬ!':
                 startQuest(message.chat.id)
-                config.state = 1
+                config.state[message.chat.id] = 1
                 return
 
-    elif config.state == 1:
+    elif config.state[message.chat.id] == 1:
         if message.chat.type == 'private':
             if message.text.lower() == 'холодное сердце':
                 firstTaskComplete1(message.chat.id)
-                config.state = 2
+                config.state[message.chat.id] = 2
                 return
 
-    elif config.state == 2:
+    elif config.state[message.chat.id] == 2:
         if message.chat.type == 'private':
             if message.text.lower() == 'король лев':
                 firstTaskComplete2(message.chat.id)
-                config.state = 3
+                config.state[message.chat.id] = 3
                 return
 
-    elif config.state == 3:
+    elif config.state[message.chat.id] == 3:
         if message.chat.type == 'private':
             if message.text.lower() == 'щенячий патруль':
                 firstTaskComplete3(message.chat.id)
-                config.state = 30
+                config.state[message.chat.id] = 30
                 return
 
-    elif config.state == 30:
+    elif config.state[message.chat.id] == 30:
         if message.chat.type == 'private':
             if message.text.lower() == 'вперёд':
                 firstTaskComplete4(message.chat.id)
-                config.state = 4
+                config.state[message.chat.id] = 4
                 return
 
-    elif config.state == 4:
+    elif config.state[message.chat.id] == 4:
         if message.chat.type == 'private':
             if message.text.lower() == '30':
                 secondTaskComplete(message.chat.id)
-                config.state = 40
+                config.state[message.chat.id] = 40
                 return
 
-    elif config.state == 40:
+    elif config.state[message.chat.id] == 40:
         if message.chat.type == 'private':
             if message.text.lower() == 'вперёд':
                 secondTaskComplete2(message.chat.id)
-                config.state = 5
+                config.state[message.chat.id] = 5
                 return
 
-    elif config.state == 5:
+    elif config.state[message.chat.id] == 5:
         if message.chat.type == 'private':
             if message.text.lower() == 'подсказка':
                 thirdTaskHint(message.chat.id)
                 return
             if message.text.lower() == 'мауи':
                 thirdTaskComplete(message.chat.id)
-                config.state = 50
+                config.state[message.chat.id] = 50
                 return
 
-    elif config.state == 50:
+    elif config.state[message.chat.id] == 50:
         if message.chat.type == 'private':
             if message.text.lower() == 'вперёд':
                 thirdTaskComplete2(message.chat.id)
-                config.state = 6
+                config.state[message.chat.id] = 6
                 return
 
-    elif config.state == 6:
+    elif config.state[message.chat.id] == 6:
         if message.chat.type == 'private':
             if message.text.lower() == 'погода':
                 forthTaskComplete1(message.chat.id)
-                config.state = 7
+                config.state[message.chat.id] = 7
                 return
 
-    elif config.state == 7:
+    elif config.state[message.chat.id] == 7:
         if message.chat.type == 'private':
             if message.text.lower() == 'сказка':
                 forthTaskComplete2(message.chat.id)
-                config.state = 8
+                config.state[message.chat.id] = 8
                 return
 
-    elif config.state == 8:
+    elif config.state[message.chat.id] == 8:
         if message.chat.type == 'private':
             if message.text.lower() == 'дождь':
                 forthTaskComplete3(message.chat.id)
-                config.state = 9
+                config.state[message.chat.id] = 9
                 return
 
-    elif config.state == 9:
+    elif config.state[message.chat.id] == 9:
         if message.chat.type == 'private':
             if message.text.lower() == 'игрушка':
                 forthTaskComplete4(message.chat.id)
-                config.state = 90
+                config.state[message.chat.id] = 90
                 return
 
-    elif config.state == 90:
+    elif config.state[message.chat.id] == 90:
         if message.chat.type == 'private':
             if message.text.lower() == 'вперёд':
                 forthTaskComplete5(message.chat.id)
-                config.state = 10
+                config.state[message.chat.id] = 10
                 return
 
-    elif config.state == 13:
+    elif config.state[message.chat.id] == 13:
         if message.chat.type == 'private':
+            adminMsg = "\n\nКвест пройден!!!\n"
+            adminMsg += message.text
+            user = message.from_user.username
+            adminMsg += ("Username: @" + (user if user is not None else "") + "\n")
+            user = message.from_user.first_name
+            adminMsg += ("First name: " + (user if user is not None else "") + "\n")
+            user = message.from_user.last_name
+            adminMsg += ("Last name: " + (user if user is not None else "") + "\n")
+            adminMsg += ("ID: " + str(message.chat.id) + "\n")
+            bot.send_message(config.adminId, adminMsg)
             if message.text.lower() == 'классный квест!':
                 goodFinal(message.chat.id)
                 return
@@ -315,22 +334,24 @@ def text_answer(message):
 
 
 @bot.message_handler(content_types=['photo'])
-def text_answer(message):
-    if config.state == 10:
+def photo_answer(message):
+    if not message.chat.id in config.state:
+        return
+    if config.state[message.chat.id] == 10:
         if message.chat.type == 'private':
             bot.send_message(message.chat.id, 'У тебя отлично получается! \
 Оталось две фотографии.')
-            config.state = 11
+            config.state[message.chat.id] = 11
             return
 
-    if config.state == 11:
+    if config.state[message.chat.id] == 11:
         if message.chat.type == 'private':
             bot.send_message(message.chat.id, 'Вот это сходство! С нетерпением\
  жду третью фотографию ❤️')
-            config.state = 12
+            config.state[message.chat.id] = 12
             return
 
-    if config.state == 12:
+    if config.state[message.chat.id] == 12:
         if message.chat.type == 'private':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             item1 = types.KeyboardButton("Классный квест!")
@@ -339,7 +360,7 @@ def text_answer(message):
             bot.send_message(message.chat.id, '🔥 Это было круто. У тебя \
 отлично получилось справиться с разными заданиями👏 Тебе понравился квиз? Кликни на кнопку с подходящим вариантом.',
                              parse_mode='html', reply_markup=markup)
-            config.state = 13
+            config.state[message.chat.id] = 13
             return
 
     bot.send_message(message.chat.id, 'Это не совсем то, чего я жду. Попроси \
